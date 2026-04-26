@@ -2,7 +2,7 @@ import { BoxRenderable, MouseButton, MouseEvent, RGBA, TextAttributes } from "@o
 import { For, createMemo, createSignal, onCleanup, onMount, type JSX } from "solid-js"
 import { useTheme, tint } from "@tui/context/theme"
 import * as Sound from "@tui/util/sound"
-import { go, logo } from "@/cli/logo"
+import { go, logo, ctosync } from "@/cli/logo"
 
 export type LogoShape = {
   left: string[]
@@ -890,4 +890,9 @@ export function GoLogo() {
   const { theme } = useTheme()
   const base = tint(theme.background, theme.text, 0.62)
   return <Logo shape={go} ink={base} idle />
+}
+
+export function CTOSyncLogo() {
+  const { theme } = useTheme()
+  return <Logo shape={ctosync} ink={theme.primary} idle />
 }
