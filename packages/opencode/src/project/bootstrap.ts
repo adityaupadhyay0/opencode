@@ -14,7 +14,9 @@ import { ShareNext } from "@/share"
 import * as Effect from "effect/Effect"
 import { Config } from "@/config"
 import { defaultIngestor } from "../knowledge/ingestor"
+import { createAutoExplorer } from "../knowledge/auto-explorer"
 import { Filesystem } from "@/util"
+import { AppFileSystem } from "@opencode-ai/core/filesystem"
 import path from "path"
 
 export const InstanceBootstrap = Effect.gen(function* () {
@@ -41,6 +43,11 @@ export const InstanceBootstrap = Effect.gen(function* () {
     Log.Default.info("CTOSync: found ctosync.json, ingesting...", { path: ctosyncPath })
     yield* Effect.promise(() => defaultIngestor.ingest(ctosyncPath)).pipe(Effect.ignore)
   }
+
+  // CTOSync: Auto-explore technical structure
+  const appFs = yield* AppFileSystem.Service
+  const explorer = createAutoExplorer(appFs)
+  yield* Effect.promise(() => explorer.scan()).pipe(Effect.ignore)
 
   yield* Bus.Service.use((svc) =>
     svc.subscribeCallback(Command.Event.Executed, async (payload) => {
