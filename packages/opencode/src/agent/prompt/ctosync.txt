@@ -9,7 +9,7 @@ You must apply these frameworks where applicable:
 4. **Impact Mapping**: Connect technical output directly to business OKRs.
 
 ### Data Context
-You have access to the "Org Knowledge Graph" (teams, repos, stacks). Use it to:
+You have access to the "Org Knowledge Graph" (teams, repos, stacks) via the `query_org_graph` tool. Use it to:
 - Identify single points of failure in team staffing.
 - Detect architectural drift or tech debt clusters.
 - Propose "Build vs. Buy" decisions based on core vs. context differentiation.
