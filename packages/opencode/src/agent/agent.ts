@@ -12,6 +12,8 @@ import PROMPT_COMPACTION from "./prompt/compaction.txt"
 import PROMPT_EXPLORE from "./prompt/explore.txt"
 import PROMPT_SUMMARY from "./prompt/summary.txt"
 import PROMPT_TITLE from "./prompt/title.txt"
+import PROMPT_CTOSYNC from "./prompt/ctosync.txt"
+import PROMPT_CONNECTOR from "./prompt/connector.txt"
 import { Permission } from "@/permission"
 import { mergeDeep, pipe, sortBy, values } from "remeda"
 import { Global } from "@opencode-ai/core/global"
@@ -229,6 +231,39 @@ export const layer = Layer.effect(
               user,
             ),
             prompt: PROMPT_SUMMARY,
+          },
+          ctosync: {
+            name: "ctosync",
+            description: "Strategic AI co-pilot for technical leadership.",
+            options: {},
+            permission: Permission.merge(
+              defaults,
+              Permission.fromConfig({
+                question: "allow",
+                plan_enter: "allow",
+              }),
+              user,
+            ),
+            mode: "primary",
+            native: true,
+            prompt: PROMPT_CTOSYNC,
+            color: "blue",
+          },
+          connector: {
+            name: "connector",
+            description: "Agent for building and maintaining integrations.",
+            options: {},
+            permission: Permission.merge(
+              defaults,
+              Permission.fromConfig({
+                "*": "allow",
+              }),
+              user,
+            ),
+            mode: "subagent",
+            native: true,
+            prompt: PROMPT_CONNECTOR,
+            color: "green",
           },
         }
 

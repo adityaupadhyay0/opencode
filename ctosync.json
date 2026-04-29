@@ -1,0 +1,40 @@
+{
+  "org": {
+    "name": "Acme Corp",
+    "industry": "SaaS",
+    "headcount": 35
+  },
+  "teams": [
+    {
+      "id": "team-platform",
+      "name": "Platform Engineering",
+      "members": ["Alice", "Bob"],
+      "stack": ["Go", "Kubernetes", "AWS"]
+    },
+    {
+      "id": "team-product",
+      "name": "Product Experience",
+      "members": ["Charlie", "Eve"],
+      "stack": ["TypeScript", "React", "Next.js"]
+    }
+  ],
+  "repositories": [
+    {
+      "id": "repo-api",
+      "name": "acme-api",
+      "owner": "team-platform"
+    },
+    {
+      "id": "repo-web",
+      "name": "acme-web",
+      "owner": "team-product"
+    }
+  ],
+  "okrs": [
+    {
+      "id": "okr-q2-velocity",
+      "objective": "Increase deployment frequency by 20%",
+      "owner": "team-platform"
+    }
+  ]
+}

@@ -13,6 +13,9 @@ import { FileWatcher } from "@/file/watcher"
 import { ShareNext } from "@/share"
 import * as Effect from "effect/Effect"
 import { Config } from "@/config"
+import { defaultIngestor } from "../knowledge/ingestor"
+import { Filesystem } from "@/util"
+import path from "path"
 
 export const InstanceBootstrap = Effect.gen(function* () {
   Log.Default.info("bootstrapping", { directory: Instance.directory })
@@ -31,6 +34,13 @@ export const InstanceBootstrap = Effect.gen(function* () {
       Snapshot.Service,
     ].map((s) => Effect.forkDetach(s.use((i) => i.init()))),
   ).pipe(Effect.withSpan("InstanceBootstrap.init"))
+
+  // CTOSync: Ingest organizational context if present
+  const ctosyncPath = path.join(Instance.directory, "ctosync.json")
+  if (yield* Effect.promise(() => Filesystem.exists(ctosyncPath))) {
+    Log.Default.info("CTOSync: found ctosync.json, ingesting...", { path: ctosyncPath })
+    yield* Effect.promise(() => defaultIngestor.ingest(ctosyncPath)).pipe(Effect.ignore)
+  }
 
   yield* Bus.Service.use((svc) =>
     svc.subscribeCallback(Command.Event.Executed, async (payload) => {
