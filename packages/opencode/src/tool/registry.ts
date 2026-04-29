@@ -1,5 +1,6 @@
 import { PlanExitTool } from "./plan"
 import { QueryOrgGraphTool } from "./query_org_graph"
+import { WriteSkillTool } from "../agent/connector/write_skill"
 import { Session } from "../session"
 import { QuestionTool } from "./question"
 import { BashTool } from "./bash"
@@ -116,6 +117,7 @@ export const layer: Layer.Layer<
     const greptool = yield* GrepTool
     const patchtool = yield* ApplyPatchTool
     const querygraph = yield* QueryOrgGraphTool
+    const writeskill = yield* WriteSkillTool
     const skilltool = yield* SkillTool
     const agent = yield* Agent.Service
 
@@ -202,6 +204,7 @@ export const layer: Layer.Layer<
           search: Tool.init(websearch),
           code: Tool.init(codesearch),
           querygraph: Tool.init(querygraph),
+          writeskill: Tool.init(writeskill),
           skill: Tool.init(skilltool),
           patch: Tool.init(patchtool),
           question: Tool.init(question),
@@ -226,6 +229,7 @@ export const layer: Layer.Layer<
             tool.search,
             tool.code,
             tool.querygraph,
+            tool.writeskill,
             tool.skill,
             tool.patch,
             ...(Flag.OPENCODE_EXPERIMENTAL_LSP_TOOL ? [tool.lsp] : []),

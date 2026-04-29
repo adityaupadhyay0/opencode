@@ -42,6 +42,7 @@ import { KeybindProvider, useKeybind } from "@tui/context/keybind"
 import { ThemeProvider, useTheme } from "@tui/context/theme"
 import { Home } from "@tui/routes/home"
 import { Session } from "@tui/routes/session"
+import { Health } from "./routes/health"
 import { PromptHistoryProvider } from "./component/prompt/history"
 import { FrecencyProvider } from "./component/prompt/frecency"
 import { PromptStashProvider } from "./component/prompt/stash"
@@ -253,6 +254,13 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
     })
 
   useKeyboard((evt) => {
+    if (evt.name === "escape" && route.data.type === "health") {
+      route.navigate({ type: "home" })
+      evt.preventDefault()
+      evt.stopPropagation()
+      return
+    }
+
     if (!Flag.OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT) return
     const sel = renderer.getSelection()
     if (!sel) return
@@ -591,6 +599,18 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
       category: "System",
     },
     {
+      title: "Engineering Health Dashboard",
+      value: "ctosync.health",
+      slash: {
+        name: "health",
+      },
+      onSelect: () => {
+        route.navigate({ type: "health" })
+        dialog.clear()
+      },
+      category: "CTOSync",
+    },
+    {
       title: "Switch theme",
       value: "theme.switch",
       keybind: "theme_list",
@@ -858,6 +878,9 @@ function App(props: { onSnapshot?: () => Promise<string[]> }) {
           </Match>
           <Match when={route.data.type === "session"}>
             <Session />
+          </Match>
+          <Match when={route.data.type === "health"}>
+            <Health />
           </Match>
         </Switch>
       </Show>

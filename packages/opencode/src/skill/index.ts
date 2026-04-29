@@ -23,6 +23,7 @@ const log = Log.create({ service: "skill" })
 const EXTERNAL_DIRS = [".claude", ".agents"]
 const EXTERNAL_SKILL_PATTERN = "skills/**/SKILL.md"
 const OPENCODE_SKILL_PATTERN = "{skill,skills}/**/SKILL.md"
+const GENERATED_SKILL_PATTERN = "src/skill/generated/**/SKILL.md"
 const SKILL_PATTERN = "**/SKILL.md"
 
 export const Info = Schema.Struct({
@@ -171,6 +172,7 @@ const discoverSkills = Effect.fnUntraced(function* (
   const configDirs = yield* config.directories()
   for (const dir of configDirs) {
     yield* scan(state, dir, OPENCODE_SKILL_PATTERN)
+    yield* scan(state, dir, GENERATED_SKILL_PATTERN)
   }
 
   const cfg = yield* config.get()
