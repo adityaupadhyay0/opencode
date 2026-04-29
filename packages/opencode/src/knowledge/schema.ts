@@ -1,44 +1,52 @@
+import { z } from "zod";
+
 /**
  * CTOSync Org Knowledge Graph Schema
- *
- * Defines the core entities and relations that the Strategic Agent uses
- * to understand the organization.
  */
 
-export type EntityType =
-  | 'team'
-  | 'contributor'
-  | 'repository'
-  | 'epic'
-  | 'decision'
-  | 'stack'
-  | 'vendor'
-  | 'okr';
+export const EntityTypeSchema = z.enum([
+  "team",
+  "contributor",
+  "repository",
+  "epic",
+  "decision",
+  "stack",
+  "vendor",
+  "okr",
+]);
 
-export interface Entity {
-  id: string;
-  type: EntityType;
-  name: string;
-  metadata: Record<string, any>;
-  createdAt: number;
-  updatedAt: number;
-}
+export type EntityType = z.infer<typeof EntityTypeSchema>;
 
-export interface Relation {
-  fromId: string;
-  toId: string;
-  label: string; // e.g., 'owns', 'manages', 'depends_on', 'contributes_to'
-  metadata?: Record<string, any>;
-}
+export const EntitySchema = z.object({
+  id: z.string(),
+  type: EntityTypeSchema,
+  name: z.string(),
+  metadata: z.record(z.string(), z.unknown()).default({}),
+  createdAt: z.number().optional(),
+  updatedAt: z.number().optional(),
+});
 
-export interface KnowledgeGraph {
-  entities: Entity[];
-  relations: Relation[];
-}
+export type Entity = z.infer<typeof EntitySchema>;
+
+export const RelationSchema = z.object({
+  fromId: z.string(),
+  toId: z.string(),
+  label: z.string().describe("e.g., 'owns', 'manages', 'depends_on', 'contributes_to'"),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+
+export type Relation = z.infer<typeof RelationSchema>;
+
+export const KnowledgeGraphSchema = z.object({
+  entities: z.array(EntitySchema),
+  relations: z.array(RelationSchema),
+});
+
+export type KnowledgeGraph = z.infer<typeof KnowledgeGraphSchema>;
 
 /**
- * Example Ingestor Interface
+ * Ingestor interface for populating the graph.
  */
 export interface Ingestor {
-  ingest(path: string): Promise<KnowledgeGraph>;
+  ingest(path: string): Promise<void>;
 }
